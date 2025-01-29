@@ -1,0 +1,23 @@
+# Memory
+CONFIG set allow.sysvipc=1;
+# ICMP
+CONFIG set allow.raw_sockets=1; 
+
+RESTART
+
+# install required packages
+CMD cd /tmp; fetch https://www.python.org/ftp/python/3.10.15/Python-3.10.15.tar.xz
+CMD tar -xvzf Python-3.10.15.tar.xz; cd Python-3.10.15
+CMD ./configure --with-system-ffi --with-computed-gotos --enable-shared
+CMD make -j$(sysctl -n hw.ncpu)
+CMD make altinstall
+
+CMD cd /tmp; fetch https://bootstrap.pypa.io/get-pip.py
+CMD python3.10 get-pip.py
+CMD ln -s /usr/local/bin/python3.10 /usr/local/bin/python3
+CMD ln -s /usr/local/bin/pip3.10 /usr/local/bin/pip3
+CMD echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bashrc
+# CMD echo $SHELL # Check Terminal
+#CMD . ~/.bashrc
+#CMD source ~/.bashrc # Bash
+#CMD python3.10 -m venv venv
